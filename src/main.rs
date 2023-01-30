@@ -16,7 +16,6 @@ enum ProgramScreen {
 }
 
 
-
 fn main() {
     let mut stdout = stdout();
     enable_raw_mode().unwrap();
