@@ -2,5 +2,5 @@
 console text based rpg dungeon crawler (18+)
 
 ## changelog
-### v0.0.1a
+### Va0.0.1
 Implemented main menu
