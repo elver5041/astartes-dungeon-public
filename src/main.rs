@@ -37,23 +37,24 @@ fn main() {
                     execute!(stdout, cursor::MoveTo(sang_text_x, sang_title_y + sang_text_y + i as u16), Print(strs[i])).unwrap();
                 }
                 let mut cursor_menu = 0;
-                let cursor_y = sang_title_y + sang_text_y + cursor_menu;
+                let cursor_x = sang_text_x - sang_curs;
+                let cursor_y = sang_title_y + sang_text_y;
                 loop {
-                    execute!(stdout, cursor::MoveTo(sang_text_x-sang_curs, cursor_y), Print(">")).unwrap();
+                    execute!(stdout, cursor::MoveTo(cursor_x, cursor_y + cursor_menu), Print(">")).unwrap();
                     match read().unwrap() {
                         Event::Key(KeyEvent {code: KeyCode::Up, modifiers: _ }) |
                         Event::Key(KeyEvent {code: KeyCode::Char('w'), modifiers: _ }) |
                         Event::Key(KeyEvent {code: KeyCode::Char('8'), modifiers: _ }) => {
                             if cursor_menu > 0{
-                                execute!(stdout, cursor::MoveTo(sang_text_x-sang_curs, cursor_y), Print(" ")).unwrap();
-                                cursor_menu-=1;
+                                execute!(stdout, cursor::MoveTo(cursor_x, cursor_y + cursor_menu), Print(" ")).unwrap();
+                                cursor_menu -=1 ;
                             }
                         },
                         Event::Key(KeyEvent {code: KeyCode::Down, modifiers: _ }) |
                         Event::Key(KeyEvent {code: KeyCode::Char('s'), modifiers: _ }) |
                         Event::Key(KeyEvent {code: KeyCode::Char('2'), modifiers: _ }) => {
                             if cursor_menu + 1 < strs.len() as u16 {
-                                execute!(stdout, cursor::MoveTo(sang_text_x-sang_curs, cursor_y), Print(" ")).unwrap();
+                                execute!(stdout, cursor::MoveTo(cursor_x, cursor_y + cursor_menu), Print(" ")).unwrap();
                                 cursor_menu += 1;
                             }
                         },
