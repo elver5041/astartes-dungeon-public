@@ -30,15 +30,15 @@ fn main() {
     'main: loop {
         match &program_screen {
             ProgramScreen::Menu => {
+                let mut cursor_menu = 0;
+                let cursor_x = sang_text_x - sang_curs;
+                let cursor_y = sang_title_y + sang_text_y;
                 execute!(stdout, cursor::Hide, Clear(ClearType::All)).unwrap();
                 execute!(stdout, cursor::MoveTo(sang_title_x, sang_title_y), Print("Astares Dungeon by elver")).unwrap();
                 let strs = ["New game", "Load game", "Options", "Quit game"];
                 for i in 0..strs.len() {
-                    execute!(stdout, cursor::MoveTo(sang_text_x, sang_title_y + sang_text_y + i as u16), Print(strs[i])).unwrap();
+                    execute!(stdout, cursor::MoveTo(sang_text_x, cursor_y + i as u16), Print(strs[i])).unwrap();
                 }
-                let mut cursor_menu = 0;
-                let cursor_x = sang_text_x - sang_curs;
-                let cursor_y = sang_title_y + sang_text_y;
                 loop {
                     execute!(stdout, cursor::MoveTo(cursor_x, cursor_y + cursor_menu), Print(">")).unwrap();
                     match read().unwrap() {
