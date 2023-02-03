@@ -1,3 +1,5 @@
+mod character;
+
 #[macro_use]
 extern crate crossterm;
 
@@ -22,10 +24,6 @@ enum GameStatus {
     StoryEvent
 }
 
-struct Character {
-    
-}
-
 fn main() {
     let mut stdo = stdout();
     enable_raw_mode().unwrap();
@@ -48,9 +46,8 @@ fn main() {
                     cursor::Hide, 
                     Clear(ClearType::All), 
                     cursor::MoveTo(sang_title_x, sang_title_y), 
-                    Print("Astares Dungeon by elver ("),
-                    Print(format!("{:?}",size().unwrap())),
-                    Print(")")
+                    Print("Astares Dungeon by elver ")
+                    //Print(format!("{:?}",size().unwrap()))
                 ).unwrap();
                 let strs = ["New game", "Load game", "Options", "Quit game"];
                 for i in 0..strs.len() {
@@ -91,7 +88,7 @@ fn main() {
                             match cursor_menu {
                                 0 => program_screen = ProgramScreen::NewGame,
                                 1 => program_screen = ProgramScreen::LoadGame,
-                                2 => program_screen = ProgramScreen::Menu,
+                                2 => program_screen = ProgramScreen::Options,
                                 3 => break 'main,
                                 _ => ()
                             };
