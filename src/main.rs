@@ -3,11 +3,14 @@ mod character;
 #[macro_use]
 extern crate crossterm;
 
+use character::{Character, Stats, Appearance};
 use crossterm::cursor;
 use crossterm::event::{read, Event, KeyCode, KeyEvent};
 use crossterm::style::Print;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType, size};
 use std::io::{stdout, Write};
+use character::{Gender, Size, Species};
+
 enum ProgramScreen {
     Menu,
     Game(GameStatus),
@@ -99,7 +102,16 @@ fn main() {
                 }
             },
             ProgramScreen::Game(game_status) => {
-                todo!()
+                match game_status {
+                    GameStatus::Tutorial => {
+                        let c = character_edit(None);
+                        todo!()
+                    },
+                    GameStatus::Explore => todo!(),
+                    GameStatus::Combat => todo!(),
+                    GameStatus::RandEvent => todo!(),
+                    GameStatus::StoryEvent => todo!(),
+                }
             },
             ProgramScreen::NewGame => {
                 execute!(stdo, 
@@ -132,4 +144,14 @@ fn main() {
         cursor::MoveTo(0, 4)
     ).unwrap();
     disable_raw_mode().unwrap();
+}
+
+fn character_edit(c: Option<character::Character>, ) -> character::Character {
+    let c = match c {
+        None => Character::new(),
+        Some(a) => a
+    };
+    loop {
+        todo!("screen")
+    }
 }
