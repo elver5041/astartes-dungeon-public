@@ -3,13 +3,12 @@ mod character;
 #[macro_use]
 extern crate crossterm;
 
-use character::{Character, Stats, Appearance};
+use character::{Character};
 use crossterm::cursor;
 use crossterm::event::{read, Event, KeyCode, KeyEvent};
 use crossterm::style::Print;
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType, size};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType};
 use std::io::{stdout, Write};
-use character::{Gender, Size, Species};
 
 enum ProgramScreen {
     Menu,
@@ -28,7 +27,6 @@ enum GameStatus {
 }
 
 fn main() {
-    let mut stdo = stdout();
     enable_raw_mode().unwrap();
 
     let sang_title_y = 1; //title y
@@ -45,7 +43,7 @@ fn main() {
                 let mut cursor_menu = 0;
                 let cursor_x = sang_text_x - sang_curs;
                 let cursor_y = sang_title_y + sang_text_y;
-                execute!(stdo, 
+                execute!(stdout(), 
                     cursor::Hide, 
                     Clear(ClearType::All), 
                     cursor::MoveTo(sang_title_x, sang_title_y), 
@@ -54,13 +52,13 @@ fn main() {
                 ).unwrap();
                 let strs = ["New game", "Load game", "Options", "Quit game"];
                 for i in 0..strs.len() {
-                    execute!(stdo, 
+                    execute!(stdout(), 
                         cursor::MoveTo(sang_text_x, cursor_y + i as u16), 
                         Print(strs[i])
                     ).unwrap();
                 }
                 loop {
-                    execute!(stdo, 
+                    execute!(stdout(), 
                         cursor::MoveTo(cursor_x, cursor_y + cursor_menu), 
                         Print(">"),
                         cursor::MoveTo(cursor_x, cursor_y + cursor_menu)
@@ -70,7 +68,7 @@ fn main() {
                         Event::Key(KeyEvent {code: KeyCode::Char('w'), modifiers: _ }) |
                         Event::Key(KeyEvent {code: KeyCode::Char('8'), modifiers: _ }) => {
                             if cursor_menu > 0{
-                                execute!(stdo,  
+                                execute!(stdout(),  
                                     Print(" ")
                                 ).unwrap();
                                 cursor_menu -=1 ;
@@ -80,7 +78,7 @@ fn main() {
                         Event::Key(KeyEvent {code: KeyCode::Char('s'), modifiers: _ }) |
                         Event::Key(KeyEvent {code: KeyCode::Char('2'), modifiers: _ }) => {
                             if cursor_menu + 1 < strs.len() as u16 {
-                                execute!(stdo, 
+                                execute!(stdout(), 
                                     Print(" ")
                                 ).unwrap();
                                 cursor_menu += 1;
@@ -104,8 +102,8 @@ fn main() {
             ProgramScreen::Game(game_status) => {
                 match game_status {
                     GameStatus::Tutorial => {
-                        let c = character_edit(None);
-                        todo!()
+                        let c = character_edit(None,None);
+                        todo!("edited")
                     },
                     GameStatus::Explore => todo!(),
                     GameStatus::Combat => todo!(),
@@ -114,7 +112,7 @@ fn main() {
                 }
             },
             ProgramScreen::NewGame => {
-                execute!(stdo, 
+                execute!(stdout(), 
                     cursor::Hide, 
                     Clear(ClearType::All), 
                     cursor::MoveTo(1, 1), 
@@ -123,7 +121,7 @@ fn main() {
                 program_screen = ProgramScreen::Game(GameStatus::Tutorial);
             },
             ProgramScreen::LoadGame => {
-                execute!(stdo, 
+                execute!(stdout(), 
                     cursor::Hide, 
                     Clear(ClearType::All), 
                     cursor::MoveTo(1, 1), 
@@ -136,7 +134,7 @@ fn main() {
             }
         }
     }
-    execute!(stdo, 
+    execute!(stdout(), 
         cursor::Hide, 
         Clear(ClearType::All), 
         cursor::MoveTo(1, 1), 
@@ -146,12 +144,47 @@ fn main() {
     disable_raw_mode().unwrap();
 }
 
-fn character_edit(c: Option<character::Character>, ) -> character::Character {
+fn character_edit(c: Option<character::Character>, pp: Option<u16>) -> character::Character {
     let c = match c {
         None => Character::new(),
         Some(a) => a
     };
+    let mut cursor_menu = 2;
+    
     loop {
-        todo!("screen")
+        execute!(stdout(), 
+            cursor::MoveTo(1, 1 + cursor_menu), 
+            Print(">"),
+            cursor::MoveTo(1, 1 + cursor_menu)
+        ).unwrap();
+        match read().unwrap() {
+            Event::Key(KeyEvent {code: KeyCode::Up,        modifiers: _ }) |
+            Event::Key(KeyEvent {code: KeyCode::Char('w'), modifiers: _ }) |
+            Event::Key(KeyEvent {code: KeyCode::Char('8'), modifiers: _ }) => {
+                if cursor_menu > 0{
+                    execute!(stdout(),  
+                        Print(" ")
+                    ).unwrap();
+                    cursor_menu -=1 ;
+                }
+            },
+            Event::Key(KeyEvent {code: KeyCode::Down,      modifiers: _ }) |
+            Event::Key(KeyEvent {code: KeyCode::Char('s'), modifiers: _ }) |
+            Event::Key(KeyEvent {code: KeyCode::Char('2'), modifiers: _ }) => {
+                if cursor_menu + 1 < 3 {
+                    execute!(stdout(), 
+                        Print(" ")
+                    ).unwrap();
+                    cursor_menu += 1;
+                }
+            },
+            Event::Key(KeyEvent{code: KeyCode::Enter,     modifiers: _}) |
+            Event::Key(KeyEvent{code: KeyCode::Char(' '), modifiers: _}) => {
+                todo!();
+                break;
+            },
+            _ => ()
+        }
     }
+    c
 }
