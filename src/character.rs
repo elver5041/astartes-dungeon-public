@@ -51,7 +51,7 @@ pub struct Character {
     pub attributes: Attributes,
     pub appearance: Appearance
 }
-pub const CHAR_ATTS: [&str; 18] = ["Name", "Gender", "Str", "Def", "Agi", "Mag", "Cha", "Lib", "Height", "Age", "Breasts", "Butt", "Penis", "Vagina", "Mouth", "Anus", "Species", "Subspecies"];
+pub const CHAR_ATTS: [&str; 19] = ["Name", "Gender", "Str", "Def", "Agi", "Mag", "Cha", "Lib", "Height", "Weight", "Age", "Breasts", "Butt", "Penis", "Vagina", "Mouth", "Anus", "Species", "Subspecies"];
 
 impl Character {
     pub fn new() -> Character {
@@ -106,7 +106,8 @@ impl Character {
             "Cha" => self.attributes.cha.to_string(),
             "Lib" => self.attributes.lib.to_string(), 
             "Height" => self.appearance.height.to_string(), 
-            "Age" => self.appearance.weight.to_string(), 
+            "Weight" => self.appearance.weight.to_string(), 
+            "Age" => self.appearance.age.to_string(), 
             "Breasts" => match self.appearance.breasts {
                 None => String::from("No tits"),
                 Some(s) => String::from(format!("{} cup",s))
@@ -142,11 +143,11 @@ impl Character {
             }, 
             "Mouth" => match self.appearance.mouth {
                 0 => String::from("closed"),
-                1..=9 => String::from("Tiny vagina"),
-                10..=13 => String::from("Small vagina"),
-                14..=16 => String::from("Normal vagina"),
-                17..=19 => String::from("Deep vagina"),
-                _ => String::from("Spacious vagina")
+                1..=9 => String::from("Tiny mouth"),
+                10..=13 => String::from("Small mouth"),
+                14..=16 => String::from("Normal mouth"),
+                17..=19 => String::from("Deep mouth"),
+                _ => String::from("Spacious mouth")
             }, 
             "Anus" => match self.appearance.anus {
                 0 => String::from("closed"),

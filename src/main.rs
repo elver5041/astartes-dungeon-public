@@ -155,7 +155,7 @@ fn character_edit(c: Option<character::Character>, pp: Option<u16>) -> character
     let sang_curs = 2; //how many chars the cursor goes before
     let cursor_x = sang_text_x - sang_curs;
     let cursor_y = sang_title_y + sang_text_y;
-    let mut cursor_menu = 2;
+    let mut cursor_menu = 0;
     execute!(stdout(), 
         cursor::Hide, 
         Clear(ClearType::All), 
