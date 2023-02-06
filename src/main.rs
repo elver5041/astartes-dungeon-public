@@ -1,9 +1,10 @@
 mod character;
+mod config;
 
 #[macro_use]
 extern crate crossterm;
 
-use character::{Character};
+use character::{Character, Gender, CHAR_ATTS};
 use crossterm::cursor;
 use crossterm::event::{read, Event, KeyCode, KeyEvent};
 use crossterm::style::Print;
@@ -103,9 +104,9 @@ fn main() {
                 match game_status {
                     GameStatus::Tutorial => {
                         let c = character_edit(None,None);
-                        todo!("edited")
+                        todo!("character made")
                     },
-                    GameStatus::Explore => todo!(),
+                    GameStatus::Explore => todo!("game not built yet"),
                     GameStatus::Combat => todo!(),
                     GameStatus::RandEvent => todo!(),
                     GameStatus::StoryEvent => todo!(),
@@ -113,10 +114,8 @@ fn main() {
             },
             ProgramScreen::NewGame => {
                 execute!(stdout(), 
-                    cursor::Hide, 
                     Clear(ClearType::All), 
-                    cursor::MoveTo(1, 1), 
-                    Print("game made")
+                    cursor::MoveTo(1, 1)
                 ).unwrap();
                 program_screen = ProgramScreen::Game(GameStatus::Tutorial);
             },
@@ -130,7 +129,7 @@ fn main() {
                 program_screen = ProgramScreen::Game(GameStatus::Explore);
             },
             ProgramScreen::Options => {
-                todo!()
+                todo!("no options yet")
             }
         }
     }
@@ -149,13 +148,33 @@ fn character_edit(c: Option<character::Character>, pp: Option<u16>) -> character
         None => Character::new(),
         Some(a) => a
     };
+    let sang_title_y = 1; //title y
+    let sang_title_x = 6; //title x
+    let sang_text_y = 2; //text y
+    let sang_text_x = 8; //text x
+    let sang_curs = 2; //how many chars the cursor goes before
+    let cursor_x = sang_text_x - sang_curs;
+    let cursor_y = sang_title_y + sang_text_y;
     let mut cursor_menu = 2;
-    
+    execute!(stdout(), 
+        cursor::Hide, 
+        Clear(ClearType::All), 
+        cursor::MoveTo(sang_title_x, sang_title_y), 
+        Print("Character editor")
+    ).unwrap();
+    for i in 0..CHAR_ATTS.len() {
+        execute!(stdout(), 
+            cursor::MoveTo(sang_text_x, cursor_y + i as u16), 
+            Print(CHAR_ATTS[i]),
+            Print(": "),
+            Print(c.get_att_value(CHAR_ATTS[i]))
+        ).unwrap();
+    }
     loop {
         execute!(stdout(), 
-            cursor::MoveTo(1, 1 + cursor_menu), 
+            cursor::MoveTo(cursor_x, cursor_y + cursor_menu), 
             Print(">"),
-            cursor::MoveTo(1, 1 + cursor_menu)
+            cursor::MoveTo(cursor_x, cursor_y + cursor_menu)
         ).unwrap();
         match read().unwrap() {
             Event::Key(KeyEvent {code: KeyCode::Up,        modifiers: _ }) |
@@ -171,7 +190,7 @@ fn character_edit(c: Option<character::Character>, pp: Option<u16>) -> character
             Event::Key(KeyEvent {code: KeyCode::Down,      modifiers: _ }) |
             Event::Key(KeyEvent {code: KeyCode::Char('s'), modifiers: _ }) |
             Event::Key(KeyEvent {code: KeyCode::Char('2'), modifiers: _ }) => {
-                if cursor_menu + 1 < 3 {
+                if cursor_menu + 1 < CHAR_ATTS.len() as u16 {
                     execute!(stdout(), 
                         Print(" ")
                     ).unwrap();
@@ -180,7 +199,7 @@ fn character_edit(c: Option<character::Character>, pp: Option<u16>) -> character
             },
             Event::Key(KeyEvent{code: KeyCode::Enter,     modifiers: _}) |
             Event::Key(KeyEvent{code: KeyCode::Char(' '), modifiers: _}) => {
-                todo!();
+                todo!("choosing not yet implemented");
                 break;
             },
             _ => ()
